@@ -17,6 +17,7 @@ editor_options:
 
 mlbdata <- read.csv("data/MLBDATA.csv")
 head(mlbdata)
+
 ```
 
 
@@ -30,6 +31,7 @@ sd(mlbdata$AVG)
 median(mlbdata$AVG)
 min(mlbdata$AVG)
 max(mlbdata$AVG)
+
 ```
 
 ```{r MLB Doubles}
@@ -40,6 +42,7 @@ sd(mlbdata$X2B)
 median(mlbdata$X2B)
 min(mlbdata$X2B)
 max(mlbdata$X2B)
+
 ```
 
 
@@ -59,11 +62,13 @@ pie(slices,labels = labels, main="Hits by Type")
 ```
 
 
+
 ```{r AVG Histogram}
 ## Here is a historgram for the batting average, with a normal curve to show comparison to. This data appears close to being normally distributed
 
 hist(mlbdata$AVG,main="2019 Batting Average", freq= FALSE, xlab="Batting Average", ylab= NULL, col="lightblue1")
 curve(dnorm(x, mean=mean(mlbdata$AVG), sd=sd(mlbdata$AVG)), add=TRUE, col="darkblue",lwd=1)
+
 ```
 
 ```{r OBP Histogram}
@@ -78,7 +83,8 @@ curve(dnorm(x, mean=mean(mlbdata$OBP), sd=sd(mlbdata$OBP)), add=TRUE, col="darkb
 ## This is a scatterplot that shows the relationship between batters hitting home runs and doubles. 
 ## We can see there is a positive correlation between these two, suggesting that a player who hits a lot of homeruns will likely also hit a lot of doubles throughout the season
 
-plot(mlbdata$HR,mlbdata$X2B, xlab="Home Runs", ylab="Doubles")
+plot(mlbdata$HR,mlbdata$X2B, main= "Scatterplot of Homeruns vs Doubles" , xlab="Home Runs", ylab="Doubles")
+
 ```
 
 
@@ -86,7 +92,8 @@ plot(mlbdata$HR,mlbdata$X2B, xlab="Home Runs", ylab="Doubles")
 ## This is a scatterplot that shows the relationship between batters hitting home runs and triples. 
 ## We can see there is no correlation between batters hitting home runs and triples. This is likely because power hitters lack the speed to get around the bases quickly enough to get to third base. 
 
-plot(mlbdata$HR,mlbdata$X3B, xlab="Home Runs", ylab="Triples")
+plot(mlbdata$HR,mlbdata$X3B, main= "Scatterplot of Homeruns vs Triples", xlab="Home Runs", ylab="Triples")
+
 ```
 
 
@@ -94,5 +101,22 @@ plot(mlbdata$HR,mlbdata$X3B, xlab="Home Runs", ylab="Triples")
 ## This is a scatterplot that shows the relationship between batters hitting home runs and getting walked. 
 ## We can see there is a positive correlation between home runs and walks. This is likely because a walk is less meaningful to give up than a homerun, so pitchers often play more conservatively with their pitch selection against power hitters.
 
-plot(mlbdata$HR,mlbdata$BB, xlab="Home Runs", ylab="Walks")
+plot(mlbdata$HR,mlbdata$BB, main= "Scatterplot of Homeruns vs Walks", xlab="Home Runs", ylab="Walks")
+
+```
+
+```{r MLB Regression - R and OBP}
+## This is a simple linear regression between on base percentage and runs scored. As the batter's on base percentage goes up, they score more runs. A player who has a high on base percentage and low number of runs scored is evidence that the players after him do a poor job of getting that player to home.
+
+model <- lm(OBP ~ R, data=mlbdata)
+summary(model)
+
+
+## The formula for our linear regression is:
+## y = 0.2798x + 0.0008326
+## The motivation behind this regression is, if I scored a run, I must have been on base. Given additional data regarding runs scored, how does this affect my OBP? The formula gives us insight into that question.
+
+with(mlbdata, plot(mlbdata$R, mlbdata$OBP, main= "Simple Regression of Runs Scored vs OBP", xlab = "Runs", ylab = "OBP"))
+abline(model)
+
 ```
