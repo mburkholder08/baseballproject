@@ -8,4 +8,8 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+This is my project for STAT 37810.
+
+We will be looking at MLB data for the 2019 season.
+
+* [Baseball Data](mlbdata.html)

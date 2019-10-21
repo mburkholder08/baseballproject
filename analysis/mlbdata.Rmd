@@ -1,0 +1,98 @@
+---
+title: "mlbdata"
+author: "Matthew"
+date: "2019-10-21"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+
+
+```{r import mlbdata}
+## The dataset I am using comes from the official MLB website. I put all of this information into an excel and turned it into a CSV. It includes a variety of batting data, including singles, doubles, triples home runs, batting average, and additional advanced metrics.
+
+## I set the minimum at "at bat" requirement to 100 so as to not skew the data set from players who may not typically bat (pitchers, reserve players) and obtain a more accurate set of information. This is common practice for sports analysis.
+
+mlbdata <- read.csv("data/MLBDATA.csv")
+head(mlbdata)
+```
+
+
+
+
+```{r MLB AVG}
+## This is the batting average for the 2019 MLB season. 
+
+mean(mlbdata$AVG)
+sd(mlbdata$AVG)
+median(mlbdata$AVG)
+min(mlbdata$AVG)
+max(mlbdata$AVG)
+```
+
+```{r MLB Doubles}
+## This is summary statistics for doubles hit during the 2019 MLB season. 
+
+mean(mlbdata$X2B)
+sd(mlbdata$X2B)
+median(mlbdata$X2B)
+min(mlbdata$X2B)
+max(mlbdata$X2B)
+```
+
+
+```{r MLB Hits Pie Chart}
+
+## This is a pie chart showing the breakdown of hits by type.
+
+slices <- c(sum(mlbdata$H - mlbdata$X2B - mlbdata$X3B - mlbdata$HR), sum(mlbdata$X2B), sum(mlbdata$X3B), sum(mlbdata$HR))
+labels <- c("Singles", "Doubles", "Triples", "Homeruns")
+percent <- round(slices/sum(slices)*100)
+labels <- paste(labels,percent)
+labels <- paste(labels,"%",sep="")
+
+pie(slices,labels = labels, main="Hits by Type")
+
+
+```
+
+
+```{r AVG Histogram}
+## Here is a historgram for the batting average, with a normal curve to show comparison to. This data appears close to being normally distributed
+
+hist(mlbdata$AVG,main="2019 Batting Average", freq= FALSE, xlab="Batting Average", ylab= NULL, col="lightblue1")
+curve(dnorm(x, mean=mean(mlbdata$AVG), sd=sd(mlbdata$AVG)), add=TRUE, col="darkblue",lwd=1)
+```
+
+```{r OBP Histogram}
+## Here is a historgram for the on base percentage, with a normal curve to show comparison to. This data appears close to being normally distributed, similar to the batting average histogram.
+
+hist(mlbdata$OBP,main="2019 On Base Percentage", freq= FALSE, xlab="On Base Percentage", ylab= NULL, col="lightblue1")
+curve(dnorm(x, mean=mean(mlbdata$OBP), sd=sd(mlbdata$OBP)), add=TRUE, col="darkblue",lwd=1)
+```
+
+
+```{r MLB Scatter - HR & Doubles}
+## This is a scatterplot that shows the relationship between batters hitting home runs and doubles. 
+## We can see there is a positive correlation between these two, suggesting that a player who hits a lot of homeruns will likely also hit a lot of doubles throughout the season
+
+plot(mlbdata$HR,mlbdata$X2B, xlab="Home Runs", ylab="Doubles")
+```
+
+
+```{r MLB Scatter - HR & Triples}
+## This is a scatterplot that shows the relationship between batters hitting home runs and triples. 
+## We can see there is no correlation between batters hitting home runs and triples. This is likely because power hitters lack the speed to get around the bases quickly enough to get to third base. 
+
+plot(mlbdata$HR,mlbdata$X3B, xlab="Home Runs", ylab="Triples")
+```
+
+
+```{r MLB Scatter - HR & BB}
+## This is a scatterplot that shows the relationship between batters hitting home runs and getting walked. 
+## We can see there is a positive correlation between home runs and walks. This is likely because a walk is less meaningful to give up than a homerun, so pitchers often play more conservatively with their pitch selection against power hitters.
+
+plot(mlbdata$HR,mlbdata$BB, xlab="Home Runs", ylab="Walks")
+```
